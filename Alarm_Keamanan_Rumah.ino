@@ -54,7 +54,14 @@ void loop() {
   int nilaiMQ2 = analogRead(pinMQ2);
   
   // Kirim data asap ke Blynk (Virtual Pin V0)
-  Blynk.virtualWrite(V0, nilaiMQ2); 
+  // 1. Baca nilai mentah dari sensor MQ-2 (Rentang standar ESP32: 0 - 4095)
+  int nilaiMentahMQ2 = analogRead(pinMQ2);
+
+  // 2. Konversi nilai mentah (0-4095) menjadi persentase (0-100)
+  int persentaseAsap = map(nilaiMentahMQ2, 0, 4095, 0, 100);
+
+  // 3. Kirim nilai persentase yang sudah dikonversi ke Blynk Gauge (Virtual Pin V0)
+  Blynk.virtualWrite(V0, persentaseAsap);
 
   // LOGIKA UTAMA
   if (nilaiMQ2 > ambangBatasAsap) {
